@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
+using VRStandardAssets.Utils;
 
 /// <summary>
 /// Display to allow the human player to place a unit.
@@ -31,17 +32,26 @@ public class PlacementGhost : MonoBehaviour
     /// </summary>
     public UnityEvent PlacedEvent;
 
+    public VRInput _vrInput;
+
     public CardData Card
     {
         get { return _card; }
     }
 
-    void Update()
+    void OnEnable()
     {
-        // If the model is active, it is in a placeable location.
-        if(Input.GetMouseButtonDown(0) && Model != null && Model.activeSelf)
-        {
-            if(GameModel.Instance.MyPlayer.CanPlayCard(_card))
+        _vrInput.OnClick += onClick; 
+    }
+
+    void OnDisable()
+    {
+        _vrInput.OnClick -= onClick; 
+    }
+
+    private void onClick()
+    {
+        if(GameModel.Instance.MyPlayer.CanPlayCard(_card))
             {
                 GameModel.Instance.MyPlayer.PlayCard(_card, transform.position);
                 PlacedEvent.Invoke();
@@ -55,7 +65,17 @@ public class PlacementGhost : MonoBehaviour
                     _errorSound.Play();
                 }
             }
+    }
+
+    void Update()
+    {
+        /*
+        // If the model is active, it is in a placeable location.
+        if(Input.GetMouseButtonDown(0) && Model != null && Model.activeSelf)
+        {
+            onClick();
         }
+        */
     }
 
     /// <summary>

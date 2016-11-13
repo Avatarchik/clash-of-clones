@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
+using VRStandardAssets.Utils;
 
 /// <summary>
 /// The display of a card in our hand.
@@ -13,6 +14,7 @@ public class CardUI : MonoBehaviour
     [SerializeField] private Image _manaIcon;
     [SerializeField] private Toggle _toggle;
     [SerializeField] private Color _disabledColor;
+    [SerializeField] private VRInteractiveItem _interactiveItem;
 
     private Color _imageOriginalColor;
     private Color _manaTextOriginalColor;
@@ -45,6 +47,29 @@ public class CardUI : MonoBehaviour
     void Start()
     {
         GameModel.Instance.GameOverEvent.AddListener(onGameEnded);
+    }
+
+    private void OnEnable()
+    {
+        if(_interactiveItem != null)
+        {
+            _interactiveItem.OnOver += HandleOver;
+            _interactiveItem.OnOut += HandleOut;
+            _interactiveItem.OnClick += HandleClick;
+            _interactiveItem.OnDoubleClick += HandleDoubleClick;
+        }
+    }
+
+
+    private void OnDisable()
+    {
+        if(_interactiveItem != null)
+        {
+            _interactiveItem.OnOver -= HandleOver;
+            _interactiveItem.OnOut -= HandleOut;
+            _interactiveItem.OnClick -= HandleClick;
+            _interactiveItem.OnDoubleClick -= HandleDoubleClick;
+        }
     }
 
     private void onGameEnded()
@@ -117,5 +142,34 @@ public class CardUI : MonoBehaviour
             _toggle.isOn = isEnabled;
         }
     }
+
+        //Handle the Over event
+        private void HandleOver()
+        {
+            Debug.Log("Show over state");
+            setToggle(true);
+        }
+
+
+        //Handle the Out event
+        private void HandleOut()
+        {
+            Debug.Log("Show out state");
+        }
+
+
+        //Handle the Click event
+        private void HandleClick()
+        {
+            Debug.Log("Show click state");
+            setToggle(true);
+        }
+
+
+        //Handle the DoubleClick event
+        private void HandleDoubleClick()
+        {
+            Debug.Log("Show double click");
+        }
 
 }
