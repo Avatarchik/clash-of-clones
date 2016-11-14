@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using VRStandardAssets.Utils;
 
 /// <summary>
 /// Snaps placement ghost to grid.  The grid puts 0,0 at the center of a cell.
@@ -6,12 +7,14 @@
 public class SnapToGrid : MonoBehaviour
 {
     [SerializeField] private PlacementGhost _ghost;
+    [SerializeField] private VREyeRaycaster _vr;
     
     private LayerMask _groundMask;
 
     void Awake()
     {
         _groundMask = LayerMask.GetMask("Ground");
+        _vr.OnRaycasthit += onRaycastHit;
     }
 
     public void SetGhost(PlacementGhost ghost)
@@ -19,6 +22,46 @@ public class SnapToGrid : MonoBehaviour
         _ghost = ghost;
     }
 
+    public void onRaycastHit(RaycastHit hit)
+    {
+        if (_ghost != null && _ghost.Model != null && _ghost.Card != null)
+        {
+            var inputPosition = Input.mousePosition;
+
+            bool isValidCell = false;
+            // If the territory is NOT controlled by the enemy ie friendly or neutral, except projectiles.
+            bool isPlaceableTerritory = _ghost.Card.IsProjectile
+                || !GameModel.Instance.EnemyPlayer.IsInTerritory(hit.point);
+
+            if (isPlaceableTerritory)
+            {
+                var position = hit.point;
+
+                var gridPoint = TerritoryData.GetGridPosition(hit.point);
+                bool isInXBounds = gridPoint.X >= 0 && gridPoint.X < Consts.GridWidth;
+                bool isInYBounds = gridPoint.Y >= 0 && gridPoint.Y < Consts.GridHeight;
+
+                if (isInXBounds && isInYBounds)
+                {
+                    isValidCell = true;
+
+                    var snappedPosition = TerritoryData.GetCenter(gridPoint.X, gridPoint.Y);
+                    snappedPosition = new Vector3(snappedPosition.x, position.y, snappedPosition.z);
+
+                    _ghost.Model.SetActive(true);
+                    _ghost.transform.position = snappedPosition;
+                }
+            }
+
+
+            if (!isValidCell)
+            {
+                _ghost.Model.SetActive(false);
+            }
+        }
+    }
+
+/*
     void Update()
     {
         if(_ghost != null && _ghost.Model != null && _ghost.Card != null)
@@ -66,4 +109,5 @@ public class SnapToGrid : MonoBehaviour
             
         }
     }
+    */
 }
