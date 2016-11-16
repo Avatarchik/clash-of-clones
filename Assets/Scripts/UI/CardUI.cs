@@ -54,9 +54,6 @@ public class CardUI : MonoBehaviour
         if(_interactiveItem != null)
         {
             _interactiveItem.OnOver += HandleOver;
-            _interactiveItem.OnOut += HandleOut;
-            _interactiveItem.OnClick += HandleClick;
-            _interactiveItem.OnDoubleClick += HandleDoubleClick;
         }
     }
 
@@ -66,9 +63,6 @@ public class CardUI : MonoBehaviour
         if(_interactiveItem != null)
         {
             _interactiveItem.OnOver -= HandleOver;
-            _interactiveItem.OnOut -= HandleOut;
-            _interactiveItem.OnClick -= HandleClick;
-            _interactiveItem.OnDoubleClick -= HandleDoubleClick;
         }
     }
 
@@ -143,33 +137,12 @@ public class CardUI : MonoBehaviour
         }
     }
 
-        //Handle the Over event
-        private void HandleOver()
+    //Handle the Over event
+    private void HandleOver()
+    {
+        if(_toggle.interactable)
         {
-            Debug.Log("Show over state");
             setToggle(true);
         }
-
-
-        //Handle the Out event
-        private void HandleOut()
-        {
-            Debug.Log("Show out state");
-        }
-
-
-        //Handle the Click event
-        private void HandleClick()
-        {
-            Debug.Log("Show click state");
-            setToggle(true);
-        }
-
-
-        //Handle the DoubleClick event
-        private void HandleDoubleClick()
-        {
-            Debug.Log("Show double click");
-        }
-
+    }
 }

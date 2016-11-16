@@ -11,7 +11,10 @@ public class VRMouseLook : MonoBehaviour {
 	public KeyCode HorizontalAndVerticalKey = KeyCode.LeftAlt;
 	public KeyCode RollKey = KeyCode.LeftControl;
 
-	Transform vrCameraTransform;
+    public float XSensitivity = 5f;
+    public float YSensitivity = 2.4f;
+
+    Transform vrCameraTransform;
 	Transform rotationTransform;
 	Transform forwardTransform;
 
@@ -38,14 +41,14 @@ public class VRMouseLook : MonoBehaviour {
 		if (Input.GetKey(HorizontalAndVerticalKey)) {
 			pitched = true;
 			if (enableYaw) {
-				mouseX += Input.GetAxis("Mouse X") * 5;
+				mouseX += Input.GetAxis("Mouse X") * XSensitivity;
 				if (mouseX <= -180) {
 					mouseX += 360;
 				} else if (mouseX > 180) {
 					mouseX -= 360;
 				}
 			}
-			mouseY -= Input.GetAxis("Mouse Y") * 2.4f;
+			mouseY -= Input.GetAxis("Mouse Y") * YSensitivity;
 			mouseY = Mathf.Clamp(mouseY, -85, 85);
 		} else if (Input.GetKey(RollKey)) {
 			rolled = true;
